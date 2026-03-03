@@ -12,6 +12,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Hide Emergent badge */
+#emergent-badge,
+a[href*="emergent"][style*="position: fixed"],
+a[href*="emergent.sh"][style*="bottom"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
 /* Smooth transitions for interactive elements */
 button, a, input, textarea {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
