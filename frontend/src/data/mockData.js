@@ -3,15 +3,15 @@ export const weddingData = {
   couple: {
     bride: "Mehak",
     groom: "Simarpal",
-    weddingDate: "2025-08-28",
-    receptionDate: "2025-08-29",
+    weddingDate: "2026-08-28",
+    receptionDate: "2026-08-29",
     location: "Ekeby & Malmö, Sweden"
   },
   
   anandKaraj: {
     title: "Anand Karaj",
     subtitle: "The Sikh Wedding Ceremony",
-    date: "August 28, 2025",
+    date: "August 28, 2026",
     description: "The Anand Karaj is the blissful union of two souls, a joyful and spiritual ceremony where vows are taken in the presence of the Guru Granth Sahib. It represents the sacred bond and commitment between two individuals embarking on a journey of love, faith, and togetherness.",
     venue: {
       name: "Ekeby Gurdwara",
@@ -63,7 +63,7 @@ export const weddingData = {
   reception: {
     title: "Reception",
     subtitle: "Evening Celebration",
-    date: "August 29, 2025",
+    date: "August 29, 2026",
     description: "Join us for an evening of celebration, warmth, and joyful moments as we dance the night away and toast to new beginnings.",
     venue: {
       name: "Elite Hotel Savoy",
@@ -106,8 +106,8 @@ export const weddingData = {
     hero: "https://images.unsplash.com/photo-1665960213508-48f07086d49c",
     heroAlt1: "https://images.unsplash.com/photo-1722952934661-dde241aeb591",
     heroAlt2: "https://images.unsplash.com/photo-1726694065237-2f1be185c5c2",
-    ceremony: "https://images.unsplash.com/photo-1587271315329-e32a009f7f22",
-    gurdwara: "https://images.unsplash.com/photo-1642355099716-a88a41a17887",
+    ceremony: "/assets/images/anand_karaj.png",
+    gurdwara: "/assets/images/anand_karaj.png",
     celebration: "https://images.unsplash.com/photo-1758924411346-4e49c4f3afde",
     reception: "https://images.unsplash.com/photo-1768777270907-235286662f98",
     florals: "https://images.unsplash.com/photo-1719909538926-cf546f6239b3",
@@ -116,16 +116,18 @@ export const weddingData = {
   }
 };
 
-// Mock RSVP submission
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+
+// Mock RSVP submission replaced with real API call
 export const submitRSVP = async (rsvpData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log('RSVP Submitted:', rsvpData);
-      // Store in localStorage for demo
-      const existingRSVPs = JSON.parse(localStorage.getItem('rsvps') || '[]');
-      existingRSVPs.push({ ...rsvpData, id: Date.now() });
-      localStorage.setItem('rsvps', JSON.stringify(existingRSVPs));
-      resolve({ success: true, message: 'RSVP received successfully!' });
-    }, 1000);
-  });
+  try {
+    const response = await axios.post(`${API_URL}/rsvps/`, rsvpData);
+    console.log('RSVP Submitted Successfully:', response.data);
+    return { success: true, message: 'RSVP received successfully!' };
+  } catch (error) {
+    console.error('RSVP Submission Error:', error);
+    throw new Error(error.response?.data?.detail || 'Failed to submit RSVP');
+  }
 };

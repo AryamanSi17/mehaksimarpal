@@ -98,7 +98,7 @@ const RSVP = () => {
           <Heart className="w-16 h-16 text-[#A16C56] mx-auto mb-6" />
           <h1 className="text-5xl md:text-6xl font-serif text-[#2A0306] mb-4">RSVP</h1>
           <p className="text-xl text-[#2A0306]/70">Please Confirm Your Attendance</p>
-          <p className="text-lg text-[#2A0306]/60 mt-2">Kindly respond by July 15, 2025</p>
+          <p className="text-lg text-[#2A0306]/60 mt-2">Kindly respond by July 15, 2026</p>
         </div>
 
         <Card className="border-2 border-[#A16C56]/20 bg-white/90 backdrop-blur-sm shadow-2xl">
@@ -126,7 +126,7 @@ const RSVP = () => {
                     <div className="flex-1">
                       <label htmlFor="anandKaraj" className="cursor-pointer">
                         <p className="font-semibold text-[#2A0306]">Anand Karaj Ceremony</p>
-                        <p className="text-sm text-[#2A0306]/70">Thursday, August 28, 2025 • 11:00 AM</p>
+                        <p className="text-sm text-[#2A0306]/70">Friday, August 28, 2026 • 11:00 AM</p>
                         <p className="text-sm text-[#2A0306]/70">Ekeby Gurdwara</p>
                       </label>
                     </div>
@@ -144,7 +144,7 @@ const RSVP = () => {
                     <div className="flex-1">
                       <label htmlFor="reception" className="cursor-pointer">
                         <p className="font-semibold text-[#2A0306]">Evening Reception</p>
-                        <p className="text-sm text-[#2A0306]/70">Friday, August 29, 2025 • 6:00 PM</p>
+                        <p className="text-sm text-[#2A0306]/70">Saturday, August 29, 2026 • 6:00 PM</p>
                         <p className="text-sm text-[#2A0306]/70">Elite Hotel Savoy, Malmö</p>
                       </label>
                     </div>

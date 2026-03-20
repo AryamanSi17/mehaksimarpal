@@ -52,7 +52,7 @@ const Home = () => {
             </h1>
             <div className="flex items-center justify-center gap-4 text-[#D4B99D] text-lg md:text-xl mt-6">
               <Calendar className="w-5 h-5" />
-              <span>August 28 & 29, 2025</span>
+              <span>August 28 & 29, 2026</span>
             </div>
             <div className="flex items-center justify-center gap-4 text-[#D4B99D] text-lg md:text-xl mt-3">
               <MapPin className="w-5 h-5" />
@@ -124,7 +124,7 @@ const Home = () => {
                 <div className="flex items-start gap-3 mb-4">
                   <Calendar className="w-5 h-5 text-[#A16C56] mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-[#2A0306]">Thursday, August 28, 2025</p>
+                    <p className="font-semibold text-[#2A0306]">Friday, August 28, 2026</p>
                     <p className="text-sm text-[#2A0306]/70">11:00 AM - Ceremony begins</p>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ const Home = () => {
                 <div className="flex items-start gap-3 mb-4">
                   <Calendar className="w-5 h-5 text-[#A16C56] mt-1 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-[#2A0306]">Friday, August 29, 2025</p>
+                    <p className="font-semibold text-[#2A0306]">Saturday, August 29, 2026</p>
                     <p className="text-sm text-[#2A0306]/70">6:00 PM - Cocktails begin</p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ const Home = () => {
             Save the Date
           </h2>
           <p className="text-lg text-[#D4B99D] mb-8 leading-relaxed">
-            Please confirm your attendance by July 15, 2025
+            Please confirm your attendance by July 15, 2026
           </p>
           <Link to="/rsvp">
             <Button className="bg-[#A16C56] hover:bg-[#A16C56]/90 text-[#E5E1C7] px-10 py-6 text-lg transition-all duration-300 hover:scale-105">

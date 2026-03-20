@@ -21,7 +21,7 @@ const AnandKaraj = () => {
         </div>
         
         <div className="relative z-10 text-center px-4 max-w-4xl">
-          <p className="text-[#E5E1C7] text-lg md:text-xl mb-3 tracking-widest">AUGUST 28, 2025</p>
+          <p className="text-[#E5E1C7] text-lg md:text-xl mb-3 tracking-widest">AUGUST 28, 2026</p>
           <h1 className="text-5xl md:text-7xl font-serif text-[#E5E1C7] mb-4">
             {anandKaraj.title}
           </h1>
