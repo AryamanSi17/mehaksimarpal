@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import AnandKaraj from "./pages/AnandKaraj";
 import Reception from "./pages/Reception";
 import RSVP from "./pages/RSVP";
+import AdminLogin from "./pages/admin/Login";
+import AdminDashboard from "./pages/admin/Dashboard";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
             <Route path="/anand-karaj" element={<AnandKaraj />} />
             <Route path="/reception" element={<Reception />} />
             <Route path="/rsvp" element={<RSVP />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
         <Footer />

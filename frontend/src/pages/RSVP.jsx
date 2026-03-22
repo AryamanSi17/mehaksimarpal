@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 
 const RSVP = () => {
   const navigate = useNavigate();
+  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -70,8 +71,9 @@ const RSVP = () => {
     try {
       const result = await submitRSVP(formData);
       toast.success(result.message);
+      setSubmitted(true);
       
-      // Reset form
+      // Reset form (optional if we show success screen)
       setFormData({
         email: '',
         attendingAnandKaraj: false,
@@ -79,16 +81,43 @@ const RSVP = () => {
         guests: [{ name: '', foodPreference: '' }]
       });
 
-      // Navigate to home after 2 seconds
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
     } catch (error) {
-      toast.error('Failed to submit RSVP. Please try again.');
+      toast.error(error.message || 'Failed to submit RSVP. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#E5E1C7] via-[#D4B99D]/30 to-[#E5E1C7] flex items-center justify-center p-4">
+        <Card className="max-w-xl w-full border-2 border-[#A16C56]/20 bg-white/95 backdrop-blur-md shadow-2xl p-12 text-center animate-in fade-in zoom-in duration-500">
+          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
+            <Heart className="w-12 h-12 text-[#A16C56] animate-pulse" />
+          </div>
+          <h2 className="text-4xl font-serif text-[#2A0306] mb-4">Thank You!</h2>
+          <p className="text-xl text-[#2A0306]/70 mb-8">
+            Your RSVP has been received. We are so excited to celebrate with you!
+          </p>
+          <div className="space-y-4">
+            <Button 
+              onClick={() => navigate('/')}
+              className="w-full bg-[#2A0306] hover:bg-[#2A0306]/90 text-[#E5E1C7] py-6 text-lg"
+            >
+              Return Home
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setSubmitted(false)}
+              className="w-full border-[#A16C56] text-[#A16C56] hover:bg-[#A16C56]/10"
+            >
+              Submit Another RSVP
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#E5E1C7] via-[#D4B99D]/30 to-[#E5E1C7] py-20 px-4">
@@ -230,7 +259,7 @@ const RSVP = () => {
                   required
                 />
                 <p className="text-sm text-[#2A0306]/60">
-                  We'll send a confirmation to this email address
+                  {/* We'll send a confirmation to this email address */}
                 </p>
               </div>
 

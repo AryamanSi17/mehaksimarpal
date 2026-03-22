@@ -128,6 +128,38 @@ export const submitRSVP = async (rsvpData) => {
     return { success: true, message: 'RSVP received successfully!' };
   } catch (error) {
     console.error('RSVP Submission Error:', error);
-    throw new Error(error.response?.data?.detail || 'Failed to submit RSVP');
+    throw new Error(error.response?.data?.message || 'Failed to submit RSVP');
+  }
+};
+// Fetch all RSVPs (Admin only)
+export const fetchRSVPs = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/rsvps/`);
+    return response.data;
+  } catch (error) {
+    console.error('Fetch RSVPs Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch RSVPs');
+  }
+};
+
+// Delete RSVP (Admin only)
+export const deleteRSVP = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/rsvps/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Delete RSVP Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to delete RSVP');
+  }
+};
+
+// Update RSVP (Admin only)
+export const updateRSVP = async (id, rsvpData) => {
+  try {
+    const response = await axios.put(`${API_URL}/rsvps/${id}`, rsvpData);
+    return response.data;
+  } catch (error) {
+    console.error('Update RSVP Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to update RSVP');
   }
 };
