@@ -1,5 +1,6 @@
 import express from 'express';
 import RSVP from '../models/RSVP.js';
+import { sendRSVPConfirmation } from '../src/services/emailService.js';
 
 const router = express.Router();
 
@@ -18,10 +19,17 @@ router.post('/', async (req, res) => {
             guests
         });
 
+        // Send Confirmation Email asynchronously
+        try {
+            await sendRSVPConfirmation(rsvp);
+        } catch (emailError) {
+            console.error('Email sending failed, but RSVP was saved:', emailError);
+        }
+
         res.status(201).json({
             success: true,
             data: rsvp,
-            message: 'RSVP submitted successfully!'
+            message: 'RSVP submitted successfully! We have sent a confirmation to your email.'
         });
     } catch (error) {
         console.error('RSVP submission error:', error);
