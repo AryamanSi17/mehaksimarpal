@@ -1,5 +1,5 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -21,6 +21,7 @@ function App() {
             <Route path="/anand-karaj" element={<AnandKaraj />} />
             <Route path="/reception" element={<Reception />} />
             <Route path="/rsvp" element={<RSVP />} />
+            <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>

@@ -7,7 +7,7 @@ export const weddingData = {
     receptionDate: "2026-08-29",
     location: "Ekeby & Malmö, Sweden"
   },
-  
+
   anandKaraj: {
     title: "Anand Karaj",
     subtitle: "The Sikh Wedding Ceremony",
@@ -59,7 +59,7 @@ export const weddingData = {
       }
     ]
   },
-  
+
   reception: {
     title: "Reception",
     subtitle: "Evening Celebration",
@@ -71,24 +71,24 @@ export const weddingData = {
       coordinates: { lat: 55.6050, lng: 13.0038 }
     },
     timeline: [
-      { 
-        time: "06:00 PM", 
-        event: "Cocktails & Mingling", 
+      {
+        time: "06:00 PM",
+        event: "Cocktails & Mingling",
         description: "Time for mingling and enjoying beautiful evening views with welcome drinks"
       },
-      { 
-        time: "07:30 PM", 
-        event: "Dinner Service", 
+      {
+        time: "07:30 PM",
+        event: "Dinner Service",
         description: "Enjoy a delicious multi-course meal as we raise a toast to love and new beginnings"
       },
-      { 
-        time: "09:00 PM", 
-        event: "Dancing & Celebration", 
+      {
+        time: "09:00 PM",
+        event: "Dancing & Celebration",
         description: "Let's celebrate! Dance the night away with live DJ and entertainment"
       },
-      { 
-        time: "12:00 AM", 
-        event: "Farewell", 
+      {
+        time: "12:00 AM",
+        event: "Farewell",
         description: "Thank you for celebrating with us!"
       }
     ],
@@ -118,7 +118,9 @@ export const weddingData = {
 
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:8000/api'
+  : '/api';
 
 // Mock RSVP submission replaced with real API call
 export const submitRSVP = async (rsvpData) => {

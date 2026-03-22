@@ -286,9 +286,7 @@ const RSVP = () => {
         <div className="mt-8 text-center">
           <p className="text-[#2A0306]/70">
             Questions? Please contact us at{' '}
-            <a href="mailto:wedding@mehaksimarpal.com" className="text-[#A16C56] hover:underline">
-              wedding@mehaksimarpal.com
-            </a>
+            <a href="mailto:mehaksimarpal@gmail.com" className="hover:text-[#A16C56] transition-colors">mehaksimarpal@gmail.com</a>
           </p>
         </div>
       </div>

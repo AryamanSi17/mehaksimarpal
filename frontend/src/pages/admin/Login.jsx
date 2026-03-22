@@ -16,8 +16,9 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
 
-        // Simple hardcoded password for demonstration
-        if (password === "wedding2026") {
+        const targetPass = "wedding2026";
+
+        if (password === targetPass) {
             setTimeout(() => {
                 sessionStorage.setItem("isAdmin", "true");
                 toast.success("Welcome, Admin");
@@ -26,7 +27,7 @@ const Login = () => {
             }, 800);
         } else {
             setTimeout(() => {
-                toast.error("Invalid password.");
+                toast.error("Invalid credentials.");
                 setLoading(false);
             }, 500);
         }
@@ -59,7 +60,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#A16C56] hover:bg-[#A16C56]/90 text-white py-6"
+                            className="w-full bg-[#2A0306] hover:bg-[#2A0306]/90 text-[#E5E1C7] py-6 font-serif text-lg tracking-wide uppercase transition-all duration-300"
                         >
                             {loading ? "Authenticating..." : "Login"}
                         </Button>

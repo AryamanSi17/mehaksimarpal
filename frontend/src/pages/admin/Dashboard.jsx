@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { 
   fetchRSVPs, 
   deleteRSVP, 
-  updateRSVP 
+  updateRSVP,
+  submitRSVP
 } from '../../data/mockData';
 import { 
   Table, 
@@ -32,7 +33,8 @@ import {
   Download,
   Lock,
   Check,
-  X
+  X,
+  Plus
 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
@@ -65,6 +67,13 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingRsvp, setEditingRsvp] = useState(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newRsvp, setNewRsvp] = useState({
+    email: '',
+    attendingAnandKaraj: true,
+    attendingReception: true,
+    guests: [{ name: '', foodPreference: '' }]
+  });
 
   useEffect(() => {
     // Simple admin check
@@ -115,6 +124,27 @@ const Dashboard = () => {
     }
   };
 
+  const handleAdd = async () => {
+    try {
+      if (!newRsvp.email) {
+        toast.error('Email is required');
+        return;
+      }
+      await submitRSVP(newRsvp);
+      toast.success('Guest added manually. Confirmation email sent.');
+      setIsAddDialogOpen(false);
+      setNewRsvp({
+        email: '',
+        attendingAnandKaraj: true,
+        attendingReception: true,
+        guests: [{ name: '', foodPreference: '' }]
+      });
+      loadData();
+    } catch (error) {
+      toast.error(error.message || 'Failed to add guest');
+    }
+  };
+
   const handleToggleAttendance = async (rsvp, field) => {
     try {
       const updatedRsvp = { ...rsvp, [field]: !rsvp[field] };
@@ -152,6 +182,13 @@ const Dashboard = () => {
         </div>
         <div className="flex gap-2">
           <Button 
+            className="bg-[#A16C56] text-white hover:bg-[#A16C56]/90" 
+            onClick={() => setIsAddDialogOpen(true)}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add New Guest
+          </Button>
+          <Button 
             variant="outline" 
             className="border-red-200 text-red-600 hover:bg-red-50" 
             onClick={() => {
@@ -161,26 +198,10 @@ const Dashboard = () => {
           >
             Logout
           </Button>
-          <Button variant="outline" className="border-[#A16C56] text-[#A16C56]" onClick={() => {/* Export Logic */}}>
-            <Download className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="guests" className="w-full">
-        <TabsList className="bg-[#E5E1C7]/30 p-1 mb-8">
-          <TabsTrigger value="guests" className="data-[state=active]:bg-white data-[state=active]:text-[#A16C56] px-8 py-3">
-             <Users className="w-4 h-4 mr-2" />
-             Guest List (Bookings)
-          </TabsTrigger>
-          <TabsTrigger value="users" className="data-[state=active]:bg-white data-[state=active]:text-[#A16C56] px-8 py-3">
-             <Lock className="w-4 h-4 mr-2" />
-             Admin Users
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="guests" className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
+      <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm">
@@ -242,24 +263,28 @@ const Dashboard = () => {
               <Table>
                 <TableHeader className="bg-[#E5E1C7]/10">
                   <TableRow>
-                    <TableHead className="w-[200px] text-[#2A0306]/70">Email</TableHead>
+                    <TableHead className="w-[120px] text-[#2A0306]/70">Date</TableHead>
+                    <TableHead className="w-[180px] text-[#2A0306]/70">Email</TableHead>
                     <TableHead className="text-[#2A0306]/70">Guests</TableHead>
                     <TableHead className="text-[#2A0306]/70 text-center">Anand Karaj</TableHead>
                     <TableHead className="text-[#2A0306]/70 text-center">Reception</TableHead>
+                    <TableHead className="text-[#2A0306]/70 text-center">Food Preferences</TableHead>
                     <TableHead className="text-[#2A0306]/70 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredRsvps.map((rsvp) => (
                     <TableRow key={rsvp._id} className="hover:bg-[#E5E1C7]/5 transition-colors">
-                      <TableCell className="font-medium text-[#2A0306]">{rsvp.email}</TableCell>
+                      <TableCell className="text-xs text-[#2A0306]/50">
+                        {new Date(rsvp.createdAt || Date.now()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                      </TableCell>
+                      <TableCell className="font-medium text-[#2A0306] break-all">{rsvp.email}</TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
                           {rsvp.guests.map((g, i) => (
                             <div key={i} className="text-base flex items-center gap-2">
-                              <CheckCircle className="w-3 h-3 text-[#A16C56]" />
-                              {g.name} 
-                              {g.foodPreference && <span className="text-xs text-[#2A0306]/40 italic">({g.foodPreference})</span>}
+                               <CheckCircle className="w-3 h-3 text-[#A16C56]" />
+                              <span className="truncate max-w-[150px]">{g.name}</span>
                             </div>
                           ))}
                         </div>
@@ -289,6 +314,15 @@ const Dashboard = () => {
                             <X className="w-6 h-6 stroke-[3px]" />
                           }
                         </Button>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex flex-col gap-1 items-center justify-center">
+                          {rsvp.guests.map((g, i) => (
+                            <div key={i} className="text-sm text-[#2A0306]/60 italic">
+                              {g.foodPreference || <span className="opacity-30">—</span>}
+                            </div>
+                          ))}
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -320,43 +354,7 @@ const Dashboard = () => {
               </Table>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="users" className="animate-in slide-in-from-bottom-2 duration-300">
-           <Card className="border-[#A16C56]/20 shadow-xl overflow-hidden bg-white/95 max-w-2xl">
-              <CardHeader className="border-b border-[#A16C56]/10">
-                <CardTitle className="text-[#2A0306]">Admin Access Control</CardTitle>
-                <p className="text-sm text-[#2A0306]/60">Manage who has access to this dashboard</p>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-semibold text-[#A16C56]">Aryaman (Super Admin)</TableCell>
-                      <TableCell><Badge>Owner</Badge></TableCell>
-                      <TableCell className="text-green-600 font-medium">Active</TableCell>
-                    </TableRow>
-                    <TableRow className="opacity-50 italic">
-                      <TableCell>Guest Manager (Mockup)</TableCell>
-                      <TableCell><Badge variant="outline">Editor</Badge></TableCell>
-                      <TableCell className="text-gray-400">Available</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-                <div className="p-6 bg-[#E5E1C7]/10 flex justify-center">
-                   <Button variant="outline" className="border-[#A16C56] text-[#A16C56]">Add New Admin Access</Button>
-                </div>
-              </CardContent>
-           </Card>
-        </TabsContent>
-      </Tabs>
+      </div>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -420,6 +418,101 @@ const Dashboard = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
             <Button className="bg-[#A16C56] text-white" onClick={handleUpdate}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add New Guest Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-serif text-[#2A0306]">Add New Guest Manually</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Email Address</Label>
+              <Input 
+                placeholder="guest@example.com"
+                value={newRsvp.email} 
+                onChange={(e) => setNewRsvp({...newRsvp, email: e.target.value})}
+              />
+              <p className="text-xs text-[#2A0306]/40">A confirmation email will be sent to this address.</p>
+            </div>
+            
+            <div className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="add-anand" 
+                  checked={newRsvp.attendingAnandKaraj}
+                  onCheckedChange={(val) => setNewRsvp({...newRsvp, attendingAnandKaraj: !!val})}
+                />
+                <Label htmlFor="add-anand">Anand Karaj</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="add-reception" 
+                  checked={newRsvp.attendingReception}
+                  onCheckedChange={(val) => setNewRsvp({...newRsvp, attendingReception: !!val})}
+                />
+                <Label htmlFor="add-reception">Reception</Label>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Label className="flex justify-between items-center">
+                Guests List
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-6 text-xs text-[#A16C56]"
+                  onClick={() => setNewRsvp({...newRsvp, guests: [...newRsvp.guests, {name: '', foodPreference: ''}]})}
+                >
+                  + Add Another Guest
+                </Button>
+              </Label>
+              {newRsvp.guests.map((guest, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <Input 
+                    className="flex-[2]"
+                    value={guest.name} 
+                    onChange={(e) => {
+                      const newGuests = [...newRsvp.guests];
+                      newGuests[idx].name = e.target.value;
+                      setNewRsvp({...newRsvp, guests: newGuests});
+                    }}
+                    placeholder={`Guest ${idx + 1} Name`}
+                  />
+                  <Input 
+                    className="flex-1"
+                    value={guest.foodPreference} 
+                    onChange={(e) => {
+                      const newGuests = [...newRsvp.guests];
+                      newGuests[idx].foodPreference = e.target.value;
+                      setNewRsvp({...newRsvp, guests: newGuests});
+                    }}
+                    placeholder="Food Pref"
+                  />
+                  {newRsvp.guests.length > 1 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-red-300 hover:text-red-500"
+                      onClick={() => {
+                        const newGuests = newRsvp.guests.filter((_, i) => i !== idx);
+                        setNewRsvp({...newRsvp, guests: newGuests});
+                      }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
+            <Button className="bg-[#A16C56] text-white" onClick={handleAdd}>Confirm & Send Invite</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -45,8 +45,8 @@ const Footer = () => {
             <div className="space-y-2 text-[#D4B99D]">
               <div className="flex items-center justify-center md:justify-end gap-2">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:wedding@mehaksimarpal.com" className="hover:text-[#A16C56] transition-colors">
-                  wedding@mehaksimarpal.com
+                <a href="mailto:mehaksimarpal@gmail.com" className="hover:text-[#A16C56] transition-colors">
+                  mehaksimarpal@gmail.com
                 </a>
               </div>
               <div className="flex items-center justify-center md:justify-end gap-2">
