@@ -9,6 +9,22 @@ const guestSchema = new mongoose.Schema({
     foodPreference: {
         type: String,
         trim: true
+    },
+    attendingAnandKaraj: {
+        type: Boolean,
+        default: false
+    },
+    attendingReception: {
+        type: Boolean,
+        default: false
+    },
+    isChild: {
+        type: Boolean,
+        default: false
+    },
+    age: {
+        type: String,
+        trim: true
     }
 });
 
@@ -18,14 +34,6 @@ const rsvpSchema = new mongoose.Schema({
         required: [true, 'Email address is required'],
         trim: true,
         lowercase: true
-    },
-    attendingAnandKaraj: {
-        type: Boolean,
-        default: false
-    },
-    attendingReception: {
-        type: Boolean,
-        default: false
     },
     guests: {
         type: [guestSchema],

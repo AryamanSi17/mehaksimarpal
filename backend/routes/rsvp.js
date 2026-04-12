@@ -9,13 +9,11 @@ const router = express.Router();
 // @access  Public
 router.post('/', async (req, res) => {
     try {
-        const { email, attendingAnandKaraj, attendingReception, guests } = req.body;
+        const { email, guests } = req.body;
 
         // Create new RSVP
         const rsvp = await RSVP.create({
             email,
-            attendingAnandKaraj,
-            attendingReception,
             guests
         });
 

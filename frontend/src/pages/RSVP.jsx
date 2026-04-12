@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Textarea } from '../components/ui/textarea';
-import { submitRSVP } from '../data/mockData';
+import { submitRSVP, weddingData } from '../data/mockData';
 import { toast } from 'sonner';
 
 const RSVP = () => {
@@ -16,16 +16,14 @@ const RSVP = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    attendingAnandKaraj: false,
-    attendingReception: false,
-    guests: [{ name: '', foodPreference: '' }]
+    guests: [{ name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true, isChild: false, age: '' }]
   });
 
   const addGuest = () => {
     if (formData.guests.length < 5) {
       setFormData({
         ...formData,
-        guests: [...formData.guests, { name: '', foodPreference: '' }]
+        guests: [...formData.guests, { name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true, isChild: false, age: '' }]
       });
     } else {
       toast.error('Maximum 5 guests allowed');
@@ -50,8 +48,9 @@ const RSVP = () => {
     e.preventDefault();
     
     // Validation
-    if (!formData.attendingAnandKaraj && !formData.attendingReception) {
-      toast.error('Please select at least one event to attend');
+    const hasAnyAttendance = formData.guests.some(guest => guest.attendingAnandKaraj || guest.attendingReception);
+    if (!hasAnyAttendance) {
+      toast.error('At least one guest must attend at least one event');
       return;
     }
 
@@ -73,12 +72,10 @@ const RSVP = () => {
       toast.success(result.message);
       setSubmitted(true);
       
-      // Reset form (optional if we show success screen)
+      // Reset form
       setFormData({
         email: '',
-        attendingAnandKaraj: false,
-        attendingReception: false,
-        guests: [{ name: '', foodPreference: '' }]
+        guests: [{ name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true }]
       });
 
     } catch (error) {
@@ -128,159 +125,184 @@ const RSVP = () => {
           <h1 className="text-5xl md:text-6xl font-serif text-[#2A0306] mb-4">RSVP</h1>
           <p className="text-xl text-[#2A0306]/70">Please Confirm Your Attendance</p>
           <p className="text-lg text-[#2A0306]/60 mt-2">Kindly respond by July 15, 2026</p>
+          <div className="mt-8 p-4 bg-white/40 backdrop-blur-sm border border-[#A16C56]/20 rounded-lg inline-block">
+            <p className="text-[#A16C56] font-serif text-lg italic tracking-wide">
+              No boxed gifts, please
+            </p>
+          </div>
         </div>
 
-        <Card className="border-2 border-[#A16C56]/20 bg-white/90 backdrop-blur-sm shadow-2xl">
-          <CardHeader className="bg-gradient-to-r from-[#2A0306] to-[#A16C56] text-[#E5E1C7] rounded-t-lg">
-            <CardTitle className="text-2xl font-serif text-center">Event Selection</CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Event Selection */}
-              <div className="space-y-4">
-                <Label className="text-lg font-semibold text-[#2A0306]">
-                  Which events will you attend? *
-                </Label>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3 p-4 border-2 border-[#A16C56]/20 rounded-lg hover:bg-[#E5E1C7]/30 transition-colors">
-                    <Checkbox 
-                      id="anandKaraj"
-                      checked={formData.attendingAnandKaraj}
-                      onCheckedChange={(checked) => 
-                        setFormData({ ...formData, attendingAnandKaraj: checked })
-                      }
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <label htmlFor="anandKaraj" className="cursor-pointer">
-                        <p className="font-semibold text-[#2A0306]">Anand Karaj Ceremony</p>
-                        <p className="text-sm text-[#2A0306]/70">Friday, August 28, 2026 • 11:00 AM</p>
-                        <p className="text-sm text-[#2A0306]/70">Ekeby Gurdwara</p>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-3 p-4 border-2 border-[#A16C56]/20 rounded-lg hover:bg-[#E5E1C7]/30 transition-colors">
-                    <Checkbox 
-                      id="reception"
-                      checked={formData.attendingReception}
-                      onCheckedChange={(checked) => 
-                        setFormData({ ...formData, attendingReception: checked })
-                      }
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <label htmlFor="reception" className="cursor-pointer">
-                        <p className="font-semibold text-[#2A0306]">Evening Reception</p>
-                        <p className="text-sm text-[#2A0306]/70">Saturday, August 29, 2026 • 6:00 PM</p>
-                        <p className="text-sm text-[#2A0306]/70">Elite Hotel Savoy, Malmö</p>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Guest Information */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label className="text-lg font-semibold text-[#2A0306]">
-                    Guest Information *
-                  </Label>
-                  <Button
-                    type="button"
-                    onClick={addGuest}
-                    variant="outline"
-                    size="sm"
-                    className="border-[#A16C56] text-[#A16C56] hover:bg-[#A16C56] hover:text-[#E5E1C7]"
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Add Guest
-                  </Button>
-                </div>
-
-                {formData.guests.map((guest, index) => (
-                  <Card key={index} className="border-2 border-[#A16C56]/20 bg-[#E5E1C7]/20">
-                    <CardContent className="p-6 space-y-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-semibold text-[#2A0306]">Guest {index + 1}</h3>
-                        {formData.guests.length > 1 && (
-                          <Button
-                            type="button"
-                            onClick={() => removeGuest(index)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor={`name-${index}`}>Full Name *</Label>
-                        <Input
-                          id={`name-${index}`}
-                          value={guest.name}
-                          onChange={(e) => updateGuest(index, 'name', e.target.value)}
-                          placeholder="Enter full name"
-                          className="border-[#A16C56]/30 focus:border-[#A16C56]"
-                          required
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor={`food-${index}`}>Food Preferences / Allergies</Label>
-                        <Textarea
-                          id={`food-${index}`}
-                          value={guest.foodPreference}
-                          onChange={(e) => updateGuest(index, 'foodPreference', e.target.value)}
-                          placeholder="E.g., Vegetarian, Gluten-free, Nut allergy, etc."
-                          className="border-[#A16C56]/30 focus:border-[#A16C56] min-h-[80px]"
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Email Address */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-lg font-semibold text-[#2A0306]">
-                  Email Address *
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="your.email@example.com"
-                  className="border-[#A16C56]/30 focus:border-[#A16C56]"
-                  required
-                />
-                <p className="text-sm text-[#2A0306]/60">
-                  {/* We'll send a confirmation to this email address */}
-                </p>
-              </div>
-
-              {/* Submit Button */}
+        <div className="space-y-8">
+          {/* Guest Information */}
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <Label className="text-2xl font-serif text-[#2A0306]">
+                Guest Information
+              </Label>
               <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-[#2A0306] to-[#A16C56] hover:from-[#2A0306]/90 hover:to-[#A16C56]/90 text-[#E5E1C7] py-6 text-lg font-semibold transition-all duration-300 hover:scale-[1.02]"
+                type="button"
+                onClick={addGuest}
+                variant="outline"
+                size="sm"
+                className="border-[#A16C56] text-[#A16C56] hover:bg-[#A16C56] hover:text-[#E5E1C7]"
               >
-                {loading ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    <Send className="w-5 h-5 mr-2" />
-                    Send RSVP
-                  </>
-                )}
+                <UserPlus className="w-4 h-4 mr-2" />
+                Add Guest
               </Button>
-            </form>
-          </CardContent>
-        </Card>
+            </div>
+
+            {formData.guests.map((guest, index) => (
+              <Card key={index} className="border-2 border-[#A16C56]/20 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-[#2A0306] to-[#A16C56] text-[#E5E1C7] py-4">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-xl font-serif">Guest {index + 1}</CardTitle>
+                    {formData.guests.length > 1 && (
+                      <Button
+                        type="button"
+                        onClick={() => removeGuest(index)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-[#E5E1C7] hover:bg-white/20"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6 space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor={`name-${index}`}>Full Name *</Label>
+                      <Input
+                        id={`name-${index}`}
+                        value={guest.name}
+                        onChange={(e) => updateGuest(index, 'name', e.target.value)}
+                        placeholder="Enter full name"
+                        className="border-[#A16C56]/30 focus:border-[#A16C56]"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`food-${index}`}>Food Preferences / Allergies</Label>
+                      <Input
+                        id={`food-${index}`}
+                        value={guest.foodPreference}
+                        onChange={(e) => updateGuest(index, 'foodPreference', e.target.value)}
+                        placeholder="E.g., Vegetarian, Nut allergy"
+                        className="border-[#A16C56]/30 focus:border-[#A16C56]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-2">
+                    <Label className="text-base font-semibold text-[#2A0306]">Attending Events:</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-start space-x-3 p-3 border border-[#A16C56]/20 rounded-lg bg-[#E5E1C7]/10">
+                        <Checkbox 
+                          id={`anand-${index}`}
+                          checked={guest.attendingAnandKaraj}
+                          onCheckedChange={(checked) => updateGuest(index, 'attendingAnandKaraj', checked)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <label htmlFor={`anand-${index}`} className="cursor-pointer">
+                            <p className="font-semibold text-sm text-[#2A0306]">{weddingData.anandKaraj.title}</p>
+                            <p className="text-xs text-[#2A0306]/70">Aug 28 • 9:00 AM</p>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3 p-3 border border-[#A16C56]/20 rounded-lg bg-[#E5E1C7]/10">
+                        <Checkbox 
+                          id={`reception-${index}`}
+                          checked={guest.attendingReception}
+                          onCheckedChange={(checked) => updateGuest(index, 'attendingReception', checked)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <label htmlFor={`reception-${index}`} className="cursor-pointer">
+                            <p className="font-semibold text-sm text-[#2A0306]">{weddingData.reception.title}</p>
+                            <p className="text-xs text-[#2A0306]/70">Aug 29 • 6:00 PM</p>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Child Section - Only for Reception */}
+                  {guest.attendingReception && (
+                    <div className="space-y-4 pt-4 border-t border-[#A16C56]/10">
+                      <div className="flex items-center space-x-3">
+                        <Checkbox 
+                          id={`child-${index}`}
+                          checked={guest.isChild}
+                          onCheckedChange={(checked) => updateGuest(index, 'isChild', checked)}
+                        />
+                        <Label htmlFor={`child-${index}`} className="cursor-pointer font-medium text-[#2A0306]">
+                          Is this a child?
+                        </Label>
+                      </div>
+                      
+                      {guest.isChild && (
+                        <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                          <Label htmlFor={`age-${index}`}>Age of Child *</Label>
+                          <Input
+                            id={`age-${index}`}
+                            value={guest.age}
+                            onChange={(e) => updateGuest(index, 'age', e.target.value)}
+                            placeholder="Enter age"
+                            className="border-[#A16C56]/30 focus:border-[#A16C56]"
+                            required={guest.isChild}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Email Address */}
+          <Card className="border-2 border-[#A16C56]/20 bg-white/90 backdrop-blur-sm shadow-xl">
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-lg font-semibold text-[#2A0306]">
+                    Email Address *
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="your.email@example.com"
+                    className="border-[#A16C56]/30 focus:border-[#A16C56]"
+                    required
+                  />
+                  <p className="text-sm text-[#2A0306]/60 italic font-light">
+                    We'll send a confirmation to this email address.
+                  </p>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-[#2A0306] to-[#A16C56] hover:from-[#2A0306]/90 hover:to-[#A16C56]/90 text-[#E5E1C7] py-6 text-lg font-semibold transition-all duration-300 hover:scale-[1.02] shadow-lg"
+                >
+                  {loading ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5 mr-2" />
+                      Submit RSVP
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Additional Info */}
         <div className="mt-8 text-center">

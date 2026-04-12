@@ -13,7 +13,7 @@ const Reception = () => {
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-[center_20%]"
           style={{ backgroundImage: `url(${weddingData.images.celebration})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-[#2A0306]/70 via-[#2A0306]/50 to-[#E5E1C7]"></div>
@@ -84,7 +84,7 @@ const Reception = () => {
             <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
               <div 
                 className="h-64 bg-cover bg-center"
-                style={{ backgroundImage: `url(${weddingData.images.reception})` }}
+                style={{ backgroundImage: `url(${weddingData.images.receptionVenue})` }}
               ></div>
               <CardContent className="p-8">
                 <MapPin className="w-10 h-10 text-[#A16C56] mb-4" />
@@ -143,35 +143,6 @@ const Reception = () => {
         </div>
       </section>
 
-      {/* Image Gallery Preview */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-serif text-[#2A0306] text-center mb-12">
-            What to Expect
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { img: weddingData.images.reception, title: "Elegant Setting" },
-              { img: weddingData.images.florals, title: "Beautiful Decor" },
-              { img: weddingData.images.celebration, title: "Joyful Celebration" }
-            ].map((item, index) => (
-              <div 
-                key={index}
-                className="relative h-80 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group"
-              >
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${item.img})` }}
-                ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#2A0306]/80 to-transparent flex items-end">
-                  <p className="text-[#E5E1C7] text-xl font-serif p-6">{item.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-20 px-4 bg-gradient-to-br from-[#2A0306] to-[#101F12]">

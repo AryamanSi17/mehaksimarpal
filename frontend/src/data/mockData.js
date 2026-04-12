@@ -5,7 +5,7 @@ export const weddingData = {
     groom: "Simarpal",
     weddingDate: "2026-08-28",
     receptionDate: "2026-08-29",
-    location: "Ekeby & Malmö, Sweden"
+    location: "Ekeby & Limhamn, Sweden"
   },
 
   anandKaraj: {
@@ -15,27 +15,30 @@ export const weddingData = {
     description: "The Anand Karaj is the blissful union of two souls, a joyful and spiritual ceremony where vows are taken in the presence of the Guru Granth Sahib. It represents the sacred bond and commitment between two individuals embarking on a journey of love, faith, and togetherness.",
     venue: {
       name: "Ekeby Gurdwara",
-      address: "Ekeby Kyrkväg 10, 590 16 Ekeby, Sweden",
-      coordinates: { lat: 58.4108, lng: 15.5489 }
+      address: "Allégatan 6, 260 51 Ekeby",
+      coordinates: { lat: 56.0022, lng: 12.9932 }
     },
     timeline: [
       { time: "09:00 AM", event: "Breakfast & Gathering", description: "Light refreshments and warm welcomes" },
-      { time: "11:00 AM", event: "Anand Karaj Ceremony", description: "Sacred wedding ceremony in the presence of Guru Granth Sahib" },
-      { time: "01:00 PM", event: "Langar (Community Lunch)", description: "Traditional vegetarian meal served to all" },
-      { time: "03:00 PM", event: "Afternoon Tea", description: "Refreshments and mingling" }
+      { time: "09:00 AM", event: "Anand Karaj Ceremony", description: "Sacred wedding ceremony in the presence of Guru Granth Sahib" },
+      { time: "01:00 PM", event: "Langar (Community Lunch)", description: "Traditional vegetarian meal served to all" }
     ],
     dressCode: {
       title: "Dress Code",
       description: "Traditional Indian attire or modest formal wear. Vibrant colors are encouraged!",
       details: [
-        "Ladies: Suits, Sarees, or modest dresses",
+        "Ladies: Suits or modest dresses",
         "Gentlemen: Kurta Pajama, Sherwani, or formal suits"
       ]
     },
     gurdwaraGuidelines: [
       {
         title: "Head Covering Required",
-        description: "All guests must cover their heads as a sign of respect. Scarves will be provided at the entrance."
+        description: "All guests must cover their heads as a sign of respect. Scarves will be provided at the entrance. Please note that caps or hats are not allowed."
+      },
+      {
+        title: "Washing Hands",
+        description: "Washing hands before entering the prayer hall is necessary and a sign of respect."
       },
       {
         title: "Modest Attire",
@@ -47,7 +50,7 @@ export const weddingData = {
       },
       {
         title: "Respectful Seating",
-        description: "Sit cross-legged or with legs folded on the floor. Men and women typically sit on opposite sides."
+        description: "Sit cross-legged or with legs folded on the floor."
       },
       {
         title: "Photography",
@@ -55,7 +58,7 @@ export const weddingData = {
       },
       {
         title: "No Tobacco or Alcohol",
-        description: "The Gurdwara is a sacred space. Please refrain from bringing tobacco or alcohol."
+        description: "The Gurdwara is a sacred space. Please refrain from bringing tobacco or alcohol. We also kindly ask you to refrain from consuming or bringing snus and E-cigarettes/Vapes to the Gurdwara, and to avoid using them before arrival."
       }
     ]
   },
@@ -66,50 +69,37 @@ export const weddingData = {
     date: "August 29, 2026",
     description: "Join us for an evening of celebration, warmth, and joyful moments as we dance the night away and toast to new beginnings.",
     venue: {
-      name: "Elite Hotel Savoy",
-      address: "Norra Vallgatan 62, 211 22 Malmö, Sweden",
-      coordinates: { lat: 55.6050, lng: 13.0038 }
+      name: "Luftkastellet",
+      address: "Luftkastellet, Utsiktsvägen 10, 216 30 Limhamn",
+      coordinates: { lat: 55.5694, lng: 12.8967 }
     },
     timeline: [
       {
         time: "06:00 PM",
-        event: "Cocktails & Mingling",
-        description: "Time for mingling and enjoying beautiful evening views with welcome drinks"
-      },
-      {
-        time: "07:30 PM",
-        event: "Dinner Service",
-        description: "Enjoy a delicious multi-course meal as we raise a toast to love and new beginnings"
-      },
-      {
-        time: "09:00 PM",
-        event: "Dancing & Celebration",
-        description: "Let's celebrate! Dance the night away with live DJ and entertainment"
-      },
-      {
-        time: "12:00 AM",
-        event: "Farewell",
-        description: "Thank you for celebrating with us!"
+        event: "Reception Starts",
+        description: "Join us for an evening of celebration, dinner, and dancing"
       }
     ],
     dressCode: {
       title: "Dress Code",
       description: "Cocktail attire or elegant evening wear. Feel free to continue with traditional attire!",
       details: [
-        "Ladies: Cocktail dresses, elegant sarees, or formal suits",
+        "Ladies: Cocktail dresses, elegant outfits, or formal suits",
         "Gentlemen: Suits, tuxedos, or traditional formal wear"
       ]
     }
   },
 
   images: {
-    hero: "https://images.unsplash.com/photo-1665960213508-48f07086d49c",
+    hero: "/assets/images/S&M-9417.jpg",
     heroAlt1: "https://images.unsplash.com/photo-1722952934661-dde241aeb591",
     heroAlt2: "https://images.unsplash.com/photo-1726694065237-2f1be185c5c2",
-    ceremony: "/assets/images/anand_karaj.png",
-    gurdwara: "/assets/images/anand_karaj.png",
-    celebration: "https://images.unsplash.com/photo-1758924411346-4e49c4f3afde",
-    reception: "https://images.unsplash.com/photo-1768777270907-235286662f98",
+    ceremony: "/assets/images/S&M-8910.jpg",
+    gurdwara: "/assets/images/S&M-8910.jpg",
+    celebration: "/assets/images/S&M-9205.jpg",
+    reception: "/assets/images/S&M-9205.jpg",
+    anandKarajVenue: "/assets/images/ekeby3.jpg",
+    receptionVenue: "/assets/images/S&M-9539.jpg",
     florals: "https://images.unsplash.com/photo-1719909538926-cf546f6239b3",
     floralPetals: "https://images.unsplash.com/photo-1521120162284-524a90fd16cf",
     floralWhite: "https://images.unsplash.com/photo-1671366654727-085735ecf340"

@@ -12,16 +12,32 @@ const transporter = nodemailer.createTransport({
 });
 
 const getRSVPConfirmationTemplate = (rsvp) => {
-    const guestList = rsvp.guests.map(g => `
-        <div style="padding: 10px 0; border-bottom: 1px solid rgba(161, 108, 86, 0.1);">
-            <div style="font-weight: 600; color: #2A0306;">${g.name}</div>
-            ${g.foodPreference ? `<div style="font-size: 13px; color: #A16C56;">Preference: ${g.foodPreference}</div>` : ''}
-        </div>
-    `).join('');
+    const guestList = rsvp.guests.map(g => {
+        const attending = [];
+        if (g.attendingAnandKaraj) attending.push('Anand Karaj');
+        if (g.attendingReception) attending.push('Reception');
+        
+        return `
+            <div style="padding: 15px 0; border-bottom: 1px solid rgba(161, 108, 86, 0.1);">
+                <div style="font-weight: 600; color: #2A0306; display: flex; justify-content: space-between; align-items: center;">
+                    <span>${g.name}</span>
+                    ${g.isChild ? `<span style="font-size: 11px; background-color: #f7ede2; color: #a16c56; padding: 2px 8px; border-radius: 10px;">CHILD (Age: ${g.age})</span>` : ''}
+                </div>
+                <div style="font-size: 13px; color: #A16C56; margin-top: 5px;">
+                    Attending: ${attending.length > 0 ? attending.join(', ') : 'Not Attending'}
+                </div>
+                ${g.foodPreference ? `<div style="font-size: 12px; color: #888; margin-top: 2px;">Dietary: ${g.foodPreference}</div>` : ''}
+            </div>
+        `;
+    }).join('');
     
-    const events = [];
-    if (rsvp.attendingAnandKaraj) events.push('Anand Karaj Ceremony');
-    if (rsvp.attendingReception) events.push('Evening Reception');
+    // Calculate total attendees per event
+    const akCount = rsvp.guests.filter(g => g.attendingAnandKaraj).length;
+    const recCount = rsvp.guests.filter(g => g.attendingReception).length;
+    
+    const summaryList = [];
+    if (akCount > 0) summaryList.push(`${akCount} guest(s) for Anand Karaj`);
+    if (recCount > 0) summaryList.push(`${recCount} guest(s) for Reception`);
     
     return `
     <!DOCTYPE html>
@@ -60,7 +76,7 @@ const getRSVPConfirmationTemplate = (rsvp) => {
                                     
                                     <div style="margin-bottom: 25px;">
                                         <div style="color: #A16C56; font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Events Attending</div>
-                                        <div style="color: #2A0306; font-size: 16px; font-weight: 500;">${events.join(' & ')}</div>
+                                        <div style="color: #2A0306; font-size: 16px; font-weight: 500;">${summaryList.join(' • ')}</div>
                                     </div>
 
                                     <div style="margin-bottom: 25px;">

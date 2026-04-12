@@ -125,7 +125,7 @@ const Home = () => {
                   <Calendar className="w-5 h-5 text-[#A16C56] mt-1 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-[#2A0306]">Friday, August 28, 2026</p>
-                    <p className="text-sm text-[#2A0306]/70">11:00 AM - Ceremony begins</p>
+                    <p className="text-sm text-[#2A0306]/70">9:00 AM - Ceremony begins</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 mb-4">
@@ -174,7 +174,7 @@ const Home = () => {
                   </div>
                 </div>
                 <p className="text-[#2A0306]/80 text-sm leading-relaxed">
-                  An evening of celebration, dinner, and dancing under the stars.
+                  An evening of celebration, dinner, and dancing.
                 </p>
                 <Link to="/reception">
                   <Button variant="outline" className="w-full mt-4 border-[#A16C56] text-[#A16C56] hover:bg-[#A16C56] hover:text-[#E5E1C7]">

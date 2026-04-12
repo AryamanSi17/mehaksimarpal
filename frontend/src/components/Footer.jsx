@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Mail, MapPin } from 'lucide-react';
+import { weddingData } from '../data/mockData';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -51,7 +52,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center justify-center md:justify-end gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>Ekeby & Malmö, Sweden</span>
+                <span>{weddingData.couple.location}</span>
               </div>
             </div>
           </div>

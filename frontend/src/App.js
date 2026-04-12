@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import AnandKaraj from "./pages/AnandKaraj";
 import Reception from "./pages/Reception";
@@ -14,6 +15,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <ScrollToTop />
         <Header />
         <div className="pt-20">
           <Routes>

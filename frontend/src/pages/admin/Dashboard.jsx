@@ -70,9 +70,7 @@ const Dashboard = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newRsvp, setNewRsvp] = useState({
     email: '',
-    attendingAnandKaraj: true,
-    attendingReception: true,
-    guests: [{ name: '', foodPreference: '' }]
+    guests: [{ name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true, isChild: false, age: '' }]
   });
 
   useEffect(() => {
@@ -135,27 +133,11 @@ const Dashboard = () => {
       setIsAddDialogOpen(false);
       setNewRsvp({
         email: '',
-        attendingAnandKaraj: true,
-        attendingReception: true,
-        guests: [{ name: '', foodPreference: '' }]
+        guests: [{ name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true }]
       });
       loadData();
     } catch (error) {
       toast.error(error.message || 'Failed to add guest');
-    }
-  };
-
-  const handleToggleAttendance = async (rsvp, field) => {
-    try {
-      const updatedRsvp = { ...rsvp, [field]: !rsvp[field] };
-      // Optimistic update
-      setRsvps(prev => prev.map(r => r._id === rsvp._id ? updatedRsvp : r));
-      
-      await updateRSVP(rsvp._id, updatedRsvp);
-      toast.success('Status updated');
-    } catch (error) {
-      toast.error('Failed to update status');
-      loadData(); // Revert on error
     }
   };
 
@@ -167,8 +149,9 @@ const Dashboard = () => {
   const stats = {
     totalRsvps: rsvps.length,
     totalGuests: rsvps.reduce((acc, curr) => acc + curr.guests.length, 0),
-    anandKaraj: rsvps.filter(r => r.attendingAnandKaraj).reduce((acc, curr) => acc + curr.guests.length, 0),
-    reception: rsvps.filter(r => r.attendingReception).reduce((acc, curr) => acc + curr.guests.length, 0)
+    anandKaraj: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.attendingAnandKaraj).length, 0),
+    reception: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.attendingReception).length, 0),
+    children: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.isChild).length, 0)
   };
 
   if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
@@ -203,10 +186,10 @@ const Dashboard = () => {
 
       <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Total Entries</CardTitle>
+                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Entries</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-[#2A0306]">{stats.totalRsvps}</div>
@@ -214,11 +197,10 @@ const Dashboard = () => {
             </Card>
             <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Confirmed Guests</CardTitle>
+                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Total Guests</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-[#A16C56]">{stats.totalGuests}</div>
-                <p className="text-xs text-[#2A0306]/50">Across all RSVPs</p>
               </CardContent>
             </Card>
             <Card className="bg-green-50/50 border-green-200 shadow-sm">
@@ -227,7 +209,6 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-green-900">{stats.anandKaraj}</div>
-                <p className="text-xs text-green-600">Guests attending</p>
               </CardContent>
             </Card>
             <Card className="bg-blue-50/50 border-blue-200 shadow-sm">
@@ -236,7 +217,14 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-blue-900">{stats.reception}</div>
-                <p className="text-xs text-blue-600">Guests attending</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-orange-50/50 border-orange-200 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-orange-700 uppercase tracking-wider">Children</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-orange-900">{stats.children}</div>
               </CardContent>
             </Card>
           </div>
@@ -265,10 +253,7 @@ const Dashboard = () => {
                   <TableRow>
                     <TableHead className="w-[120px] text-[#2A0306]/70">Date</TableHead>
                     <TableHead className="w-[180px] text-[#2A0306]/70">Email</TableHead>
-                    <TableHead className="text-[#2A0306]/70">Guests</TableHead>
-                    <TableHead className="text-[#2A0306]/70 text-center">Anand Karaj</TableHead>
-                    <TableHead className="text-[#2A0306]/70 text-center">Reception</TableHead>
-                    <TableHead className="text-[#2A0306]/70 text-center">Food Preferences</TableHead>
+                    <TableHead className="text-[#2A0306]/70">Guests & Attendance</TableHead>
                     <TableHead className="text-[#2A0306]/70 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -280,46 +265,29 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell className="font-medium text-[#2A0306] break-all">{rsvp.email}</TableCell>
                       <TableCell>
-                        <div className="flex flex-col gap-1">
+                        <div className="space-y-3 py-2">
                           {rsvp.guests.map((g, i) => (
-                            <div key={i} className="text-base flex items-center gap-2">
-                               <CheckCircle className="w-3 h-3 text-[#A16C56]" />
-                              <span className="truncate max-w-[150px]">{g.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleToggleAttendance(rsvp, 'attendingAnandKaraj')}
-                          className={`hover:bg-transparent ${rsvp.attendingAnandKaraj ? 'text-green-600' : 'text-red-400'}`}
-                        >
-                          {rsvp.attendingAnandKaraj ? 
-                            <Check className="w-6 h-6 stroke-[3px]" /> : 
-                            <X className="w-6 h-6 stroke-[3px]" />
-                          }
-                        </Button>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleToggleAttendance(rsvp, 'attendingReception')}
-                          className={`hover:bg-transparent ${rsvp.attendingReception ? 'text-blue-600' : 'text-red-400'}`}
-                        >
-                          {rsvp.attendingReception ? 
-                            <Check className="w-6 h-6 stroke-[3px]" /> : 
-                            <X className="w-6 h-6 stroke-[3px]" />
-                          }
-                        </Button>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex flex-col gap-1 items-center justify-center">
-                          {rsvp.guests.map((g, i) => (
-                            <div key={i} className="text-sm text-[#2A0306]/60 italic">
-                              {g.foodPreference || <span className="opacity-30">—</span>}
+                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                               <div className="min-w-[150px] font-medium flex items-center gap-2">
+                                  <CheckCircle className="w-3 h-3 text-[#A16C56]" />
+                                  <span>{g.name}</span>
+                                  {g.isChild && (
+                                    <Badge variant="secondary" className="bg-orange-100 text-orange-700 border-orange-200 text-[9px] h-4">
+                                      CHILD ({g.age})
+                                    </Badge>
+                                  )}
+                               </div>
+                               <div className="flex gap-3">
+                                  <Badge variant="outline" className={`${g.attendingAnandKaraj ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[10px] px-2 py-0`}>
+                                    AK: {g.attendingAnandKaraj ? 'YES' : 'NO'}
+                                  </Badge>
+                                  <Badge variant="outline" className={`${g.attendingReception ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[10px] px-2 py-0`}>
+                                    REC: {g.attendingReception ? 'YES' : 'NO'}
+                                  </Badge>
+                               </div>
+                               <div className="text-xs text-[#2A0306]/50 italic">
+                                  {g.foodPreference || ""}
+                               </div>
                             </div>
                           ))}
                         </div>
@@ -345,7 +313,7 @@ const Dashboard = () => {
                   ))}
                   {filteredRsvps.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="h-32 text-center text-[#2A0306]/40">
+                      <TableCell colSpan={4} className="h-32 text-center text-[#2A0306]/40">
                         No RSVPs found.
                       </TableCell>
                     </TableRow>
@@ -358,11 +326,11 @@ const Dashboard = () => {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit RSVP - {editingRsvp?.email}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-6 py-4">
             <div className="space-y-2">
               <Label>Email</Label>
               <Input 
@@ -371,48 +339,95 @@ const Dashboard = () => {
               />
             </div>
             
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="edit-anand" 
-                checked={editingRsvp?.attendingAnandKaraj}
-                onCheckedChange={(val) => setEditingRsvp({...editingRsvp, attendingAnandKaraj: val})}
-              />
-              <Label htmlFor="edit-anand">Attending Anand Karaj</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="edit-reception" 
-                checked={editingRsvp?.attendingReception}
-                onCheckedChange={(val) => setEditingRsvp({...editingRsvp, attendingReception: val})}
-              />
-              <Label htmlFor="edit-reception">Attending Reception</Label>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Guests ({editingRsvp?.guests.length})</Label>
-              {editingRsvp?.guests.map((guest, idx) => (
-                <div key={idx} className="flex gap-2 items-center">
-                  <Input 
-                    value={guest.name} 
-                    onChange={(e) => {
-                      const newGuests = [...editingRsvp.guests];
-                      newGuests[idx].name = e.target.value;
-                      setEditingRsvp({...editingRsvp, guests: newGuests});
-                    }}
-                    placeholder="Name"
-                  />
-                  <Input 
-                    value={guest.foodPreference} 
-                    onChange={(e) => {
-                      const newGuests = [...editingRsvp.guests];
-                      newGuests[idx].foodPreference = e.target.value;
-                      setEditingRsvp({...editingRsvp, guests: newGuests});
-                    }}
-                    placeholder="Food Pref"
-                  />
-                </div>
-              ))}
+            <div className="space-y-4">
+              <Label className="text-lg font-serif">Guests</Label>
+              <div className="space-y-4">
+                {editingRsvp?.guests.map((guest, idx) => (
+                  <Card key={idx} className="p-4 border-[#A16C56]/10">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Name</Label>
+                          <Input 
+                            value={guest.name} 
+                            onChange={(e) => {
+                              const newGuests = [...editingRsvp.guests];
+                              newGuests[idx].name = e.target.value;
+                              setEditingRsvp({...editingRsvp, guests: newGuests});
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Food Preference</Label>
+                          <Input 
+                            value={guest.foodPreference} 
+                            onChange={(e) => {
+                              const newGuests = [...editingRsvp.guests];
+                              newGuests[idx].foodPreference = e.target.value;
+                              setEditingRsvp({...editingRsvp, guests: newGuests});
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-6">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`edit-ak-${idx}`} 
+                            checked={guest.attendingAnandKaraj}
+                            onCheckedChange={(val) => {
+                              const newGuests = [...editingRsvp.guests];
+                              newGuests[idx].attendingAnandKaraj = !!val;
+                              setEditingRsvp({...editingRsvp, guests: newGuests});
+                            }}
+                          />
+                          <Label htmlFor={`edit-ak-${idx}`}>Anand Karaj</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`edit-rec-${idx}`} 
+                            checked={guest.attendingReception}
+                            onCheckedChange={(val) => {
+                              const newGuests = [...editingRsvp.guests];
+                              newGuests[idx].attendingReception = !!val;
+                              setEditingRsvp({...editingRsvp, guests: newGuests});
+                            }}
+                          />
+                          <Label htmlFor={`edit-rec-${idx}`}>Reception</Label>
+                        </div>
+                      </div>
+                      
+                      <div className="pt-2 border-t border-gray-100 flex gap-6 items-center">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`edit-child-${idx}`} 
+                            checked={guest.isChild}
+                            onCheckedChange={(val) => {
+                              const newGuests = [...editingRsvp.guests];
+                              newGuests[idx].isChild = !!val;
+                              setEditingRsvp({...editingRsvp, guests: newGuests});
+                            }}
+                          />
+                          <Label htmlFor={`edit-child-${idx}`}>Is Child?</Label>
+                        </div>
+                        {guest.isChild && (
+                          <div className="flex items-center space-x-2">
+                            <Label>Age:</Label>
+                            <Input 
+                              className="w-20 h-8"
+                              value={guest.age || ''} 
+                              onChange={(e) => {
+                                const newGuests = [...editingRsvp.guests];
+                                newGuests[idx].age = e.target.value;
+                                setEditingRsvp({...editingRsvp, guests: newGuests});
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -424,7 +439,7 @@ const Dashboard = () => {
 
       {/* Add New Guest Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-serif text-[#2A0306]">Add New Guest Manually</DialogTitle>
           </DialogHeader>
@@ -436,68 +451,27 @@ const Dashboard = () => {
                 value={newRsvp.email} 
                 onChange={(e) => setNewRsvp({...newRsvp, email: e.target.value})}
               />
-              <p className="text-xs text-[#2A0306]/40">A confirmation email will be sent to this address.</p>
             </div>
             
-            <div className="flex gap-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="add-anand" 
-                  checked={newRsvp.attendingAnandKaraj}
-                  onCheckedChange={(val) => setNewRsvp({...newRsvp, attendingAnandKaraj: !!val})}
-                />
-                <Label htmlFor="add-anand">Anand Karaj</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="add-reception" 
-                  checked={newRsvp.attendingReception}
-                  onCheckedChange={(val) => setNewRsvp({...newRsvp, attendingReception: !!val})}
-                />
-                <Label htmlFor="add-reception">Reception</Label>
-              </div>
-            </div>
-
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Label className="flex justify-between items-center">
                 Guests List
                 <Button 
                   variant="ghost" 
                   size="sm" 
                   className="h-6 text-xs text-[#A16C56]"
-                  onClick={() => setNewRsvp({...newRsvp, guests: [...newRsvp.guests, {name: '', foodPreference: ''}]})}
+                  onClick={() => setNewRsvp({...newRsvp, guests: [...newRsvp.guests, {name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true, isChild: false, age: ''}]})}
                 >
                   + Add Another Guest
                 </Button>
               </Label>
               {newRsvp.guests.map((guest, idx) => (
-                <div key={idx} className="flex gap-2 items-center">
-                  <Input 
-                    className="flex-[2]"
-                    value={guest.name} 
-                    onChange={(e) => {
-                      const newGuests = [...newRsvp.guests];
-                      newGuests[idx].name = e.target.value;
-                      setNewRsvp({...newRsvp, guests: newGuests});
-                    }}
-                    placeholder={`Guest ${idx + 1} Name`}
-                  />
-                  <Input 
-                    className="flex-1"
-                    value={guest.foodPreference} 
-                    onChange={(e) => {
-                      const newGuests = [...newRsvp.guests];
-                      newGuests[idx].foodPreference = e.target.value;
-                      setNewRsvp({...newRsvp, guests: newGuests});
-                    }}
-                    placeholder="Food Pref"
-                  />
+                <Card key={idx} className="p-4 border-[#A16C56]/10 relative">
                   {newRsvp.guests.length > 1 && (
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-red-300 hover:text-red-500"
+                      className="absolute top-2 right-2 text-red-300 hover:text-red-500"
                       onClick={() => {
                         const newGuests = newRsvp.guests.filter((_, i) => i !== idx);
                         setNewRsvp({...newRsvp, guests: newGuests});
@@ -506,13 +480,90 @@ const Dashboard = () => {
                       <X className="w-4 h-4" />
                     </Button>
                   )}
-                </div>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input 
+                        value={guest.name} 
+                        onChange={(e) => {
+                          const newGuests = [...newRsvp.guests];
+                          newGuests[idx].name = e.target.value;
+                          setNewRsvp({...newRsvp, guests: newGuests});
+                        }}
+                        placeholder={`Guest ${idx + 1} Name`}
+                      />
+                      <Input 
+                        value={guest.foodPreference} 
+                        onChange={(e) => {
+                          const newGuests = [...newRsvp.guests];
+                          newGuests[idx].foodPreference = e.target.value;
+                          setNewRsvp({...newRsvp, guests: newGuests});
+                        }}
+                        placeholder="Food Preference"
+                      />
+                    </div>
+                    <div className="flex gap-6">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`add-ak-${idx}`} 
+                          checked={guest.attendingAnandKaraj}
+                          onCheckedChange={(val) => {
+                            const newGuests = [...newRsvp.guests];
+                            newGuests[idx].attendingAnandKaraj = !!val;
+                            setNewRsvp({...newRsvp, guests: newGuests});
+                          }}
+                        />
+                        <Label htmlFor={`add-ak-${idx}`}>Anand Karaj</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`add-rec-${idx}`} 
+                          checked={guest.attendingReception}
+                          onCheckedChange={(val) => {
+                            const newGuests = [...newRsvp.guests];
+                            newGuests[idx].attendingReception = !!val;
+                            setNewRsvp({...newRsvp, guests: newGuests});
+                          }}
+                        />
+                        <Label htmlFor={`add-rec-${idx}`}>Reception</Label>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-100 flex gap-6 items-center">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`add-child-${idx}`} 
+                          checked={guest.isChild}
+                          onCheckedChange={(val) => {
+                            const newGuests = [...newRsvp.guests];
+                            newGuests[idx].isChild = !!val;
+                            setNewRsvp({...newRsvp, guests: newGuests});
+                          }}
+                        />
+                        <Label htmlFor={`add-child-${idx}`}>Is Child?</Label>
+                      </div>
+                      {guest.isChild && (
+                        <div className="flex items-center space-x-2">
+                          <Label>Age:</Label>
+                          <Input 
+                            className="w-20 h-8"
+                            value={guest.age} 
+                            onChange={(e) => {
+                              const newGuests = [...newRsvp.guests];
+                              newGuests[idx].age = e.target.value;
+                              setNewRsvp({...newRsvp, guests: newGuests});
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
               ))}
             </div>
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-            <Button className="bg-[#A16C56] text-white" onClick={handleAdd}>Confirm & Send Invite</Button>
+            <Button className="bg-[#A16C56] text-white" onClick={handleAdd}>Confirm & Add Guest</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

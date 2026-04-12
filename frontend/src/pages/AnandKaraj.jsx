@@ -14,7 +14,7 @@ const AnandKaraj = () => {
       {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-[center_20%]"
           style={{ backgroundImage: `url(${weddingData.images.gurdwara})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-[#2A0306]/70 via-[#2A0306]/50 to-[#E5E1C7]"></div>
@@ -94,6 +94,10 @@ const AnandKaraj = () => {
           
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
+              <div 
+                className="h-64 bg-cover bg-center"
+                style={{ backgroundImage: `url(${weddingData.images.anandKarajVenue})` }}
+              ></div>
               <CardContent className="p-8">
                 <MapPin className="w-10 h-10 text-[#A16C56] mb-4" />
                 <h3 className="text-2xl font-serif text-[#2A0306] mb-4">
