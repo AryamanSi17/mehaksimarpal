@@ -39,6 +39,11 @@ const rsvpSchema = new mongoose.Schema({
         type: [guestSchema],
         validate: [v => v.length > 0, 'At least one guest is required'],
         default: []
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'declined'],
+        default: 'confirmed'
     }
 }, {
     timestamps: true

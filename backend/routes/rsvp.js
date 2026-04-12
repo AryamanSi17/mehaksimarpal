@@ -14,7 +14,8 @@ router.post('/', async (req, res) => {
         // Create new RSVP
         const rsvp = await RSVP.create({
             email,
-            guests
+            guests,
+            status: 'confirmed'
         });
 
         // Send Confirmation Email asynchronously
@@ -34,6 +35,49 @@ router.post('/', async (req, res) => {
         res.status(400).json({
             success: false,
             message: error.message || 'Failed to submit RSVP'
+        });
+    }
+});
+
+// @desc    Update RSVP Status
+// @route   PATCH /api/rsvps/:id/status
+// @access  Public (should be protected)
+router.patch('/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        
+        if (!['pending', 'confirmed', 'declined'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status' });
+        }
+
+        const rsvp = await RSVP.findById(req.params.id);
+        if (!rsvp) {
+            return res.status(404).json({ success: false, message: 'RSVP not found' });
+        }
+
+        const oldStatus = rsvp.status;
+        rsvp.status = status;
+        await rsvp.save();
+
+        // Send Confirmation Email ONLY if status changed to 'confirmed'
+        if (status === 'confirmed' && oldStatus !== 'confirmed') {
+            try {
+                await sendRSVPConfirmation(rsvp);
+            } catch (emailError) {
+                console.error('Email sending failed during confirmation:', emailError);
+            }
+        }
+
+        res.json({
+            success: true,
+            data: rsvp,
+            message: `RSVP status updated to ${status}`
+        });
+    } catch (error) {
+        console.error('RSVP status update error:', error);
+        res.status(400).json({
+            success: false,
+            message: error.message || 'Failed to update status'
         });
     }
 });
@@ -63,10 +107,10 @@ router.get('/', async (req, res) => {
 // @access  Public (should be protected)
 router.put('/:id', async (req, res) => {
     try {
-        const { email, attendingAnandKaraj, attendingReception, guests } = req.body;
+        const { email, guests } = req.body;
         const rsvp = await RSVP.findByIdAndUpdate(
             req.params.id,
-            { email, attendingAnandKaraj, attendingReception, guests },
+            { email, guests },
             { new: true, runValidators: true }
         );
 

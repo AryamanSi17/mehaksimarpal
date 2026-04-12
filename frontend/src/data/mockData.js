@@ -71,7 +71,8 @@ export const weddingData = {
     venue: {
       name: "Luftkastellet",
       address: "Luftkastellet, Utsiktsvägen 10, 216 30 Limhamn",
-      coordinates: { lat: 55.5694, lng: 12.8967 }
+      coordinates: { lat: 55.5694, lng: 12.8967 },
+      mapLink: "https://maps.app.goo.gl/5Ge6zNn9cmTLttqCA?g_st=iw"
     },
     timeline: [
       {
@@ -153,5 +154,15 @@ export const updateRSVP = async (id, rsvpData) => {
   } catch (error) {
     console.error('Update RSVP Error:', error);
     throw new Error(error.response?.data?.message || 'Failed to update RSVP');
+  }
+};
+// Update RSVP Status (Admin only)
+export const updateRSVPStatus = async (id, status) => {
+  try {
+    const response = await axios.patch(`${API_URL}/rsvps/${id}/status`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Update RSVP Status Error:', error);
+    throw new Error(error.response?.data?.message || 'Failed to update RSVP status');
   }
 };

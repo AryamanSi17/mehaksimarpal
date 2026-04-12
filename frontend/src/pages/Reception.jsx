@@ -93,7 +93,7 @@ const Reception = () => {
                 </h3>
                 <p className="text-[#2A0306]/80 mb-6">{reception.venue.address}</p>
                 <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${reception.venue.coordinates.lat},${reception.venue.coordinates.lng}`}
+                  href={reception.venue.mapLink || `https://www.google.com/maps/search/?api=1&query=${reception.venue.coordinates.lat},${reception.venue.coordinates.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

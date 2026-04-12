@@ -4,7 +4,8 @@ import {
   fetchRSVPs, 
   deleteRSVP, 
   updateRSVP,
-  submitRSVP
+  submitRSVP,
+  updateRSVPStatus
 } from '../../data/mockData';
 import { 
   Table, 
@@ -34,7 +35,8 @@ import {
   Lock,
   Check,
   X,
-  Plus
+  Plus,
+  Clock
 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
@@ -141,6 +143,16 @@ const Dashboard = () => {
     }
   };
 
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await updateRSVPStatus(id, status);
+      toast.success(`RSVP ${status} and confirmation sent if applicable`);
+      loadData();
+    } catch (error) {
+      toast.error('Failed to update status');
+    }
+  };
+
   const filteredRsvps = rsvps.filter(rsvp => 
     rsvp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     rsvp.guests.some(g => g.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -154,26 +166,26 @@ const Dashboard = () => {
     children: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.isChild).length, 0)
   };
 
-  if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
+  if (loading) return <div className="p-8 text-center text-[#2A0306]">Loading dashboard...</div>;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 mb-20">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-4xl font-serif text-[#2A0306]">Admin Dashboard</h1>
-          <p className="text-[#2A0306]/60 text-lg">Manage your wedding guest list and system settings</p>
+          <p className="text-[#2A0306]/60 text-lg">Manage your wedding guest list and entries</p>
         </div>
         <div className="flex gap-2">
           <Button 
-            className="bg-[#A16C56] text-white hover:bg-[#A16C56]/90" 
+            className="bg-[#A16C56] text-white hover:bg-[#A16C56]/90 shadow-md" 
             onClick={() => setIsAddDialogOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add New Guest
+            Add Guest
           </Button>
           <Button 
             variant="outline" 
-            className="border-red-200 text-red-600 hover:bg-red-50" 
+            className="border-red-200 text-red-600 hover:bg-red-50 bg-white shadow-sm" 
             onClick={() => {
               sessionStorage.removeItem("isAdmin");
               navigate("/admin/login");
@@ -186,54 +198,44 @@ const Dashboard = () => {
 
       <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Entries</CardTitle>
-              </CardHeader>
-              <CardContent>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm col-span-1">
+              <CardHeader className="p-4">
+                <CardTitle className="text-xs font-medium text-[#2A0306]/70 uppercase tracking-wider">Entries</CardTitle>
                 <div className="text-3xl font-bold text-[#2A0306]">{stats.totalRsvps}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-[#2A0306]/70 uppercase tracking-wider">Total Guests</CardTitle>
               </CardHeader>
-              <CardContent>
+            </Card>
+            <Card className="bg-white/80 border-[#A16C56]/20 shadow-sm col-span-1">
+              <CardHeader className="p-4">
+                <CardTitle className="text-xs font-medium text-[#2A0306]/70 uppercase tracking-wider">Total Guests</CardTitle>
                 <div className="text-3xl font-bold text-[#A16C56]">{stats.totalGuests}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-green-50/50 border-green-200 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-green-700 uppercase tracking-wider">Anand Karaj</CardTitle>
               </CardHeader>
-              <CardContent>
+            </Card>
+            <Card className="bg-green-50/50 border-green-200 shadow-sm col-span-1">
+              <CardHeader className="p-4">
+                <CardTitle className="text-xs font-medium text-green-700 uppercase tracking-wider">Anand Karaj</CardTitle>
                 <div className="text-3xl font-bold text-green-900">{stats.anandKaraj}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-blue-50/50 border-blue-200 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-blue-700 uppercase tracking-wider">Reception</CardTitle>
               </CardHeader>
-              <CardContent>
+            </Card>
+            <Card className="bg-blue-50/50 border-blue-200 shadow-sm col-span-1">
+              <CardHeader className="p-4">
+                <CardTitle className="text-xs font-medium text-blue-700 uppercase tracking-wider">Reception</CardTitle>
                 <div className="text-3xl font-bold text-blue-900">{stats.reception}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-orange-50/50 border-orange-200 shadow-sm">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-orange-700 uppercase tracking-wider">Children</CardTitle>
               </CardHeader>
-              <CardContent>
+            </Card>
+            <Card className="bg-orange-50/50 border-orange-200 shadow-sm col-span-1">
+              <CardHeader className="p-4">
+                <CardTitle className="text-xs font-medium text-orange-700 uppercase tracking-wider">Children</CardTitle>
                 <div className="text-3xl font-bold text-orange-900">{stats.children}</div>
-              </CardContent>
+              </CardHeader>
             </Card>
           </div>
 
           {/* RSVP Table */}
           <Card className="border-[#A16C56]/20 shadow-xl overflow-hidden bg-white/95">
             <CardHeader className="bg-white border-b border-[#A16C56]/10 py-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="relative flex-1 max-w-md">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="relative flex-1 w-full max-w-md">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2A0306]/40" />
                   <Input 
                     placeholder="Search by email or guest name..." 
@@ -247,12 +249,12 @@ const Dashboard = () => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
               <Table>
                 <TableHeader className="bg-[#E5E1C7]/10">
                   <TableRow>
-                    <TableHead className="w-[120px] text-[#2A0306]/70">Date</TableHead>
-                    <TableHead className="w-[180px] text-[#2A0306]/70">Email</TableHead>
+                    <TableHead className="w-[100px] text-[#2A0306]/70">Date</TableHead>
+                    <TableHead className="w-[180px] text-[#2A0306]/70 hidden md:table-cell">Email</TableHead>
                     <TableHead className="text-[#2A0306]/70">Guests & Attendance</TableHead>
                     <TableHead className="text-[#2A0306]/70 text-right">Actions</TableHead>
                   </TableRow>
@@ -260,32 +262,32 @@ const Dashboard = () => {
                 <TableBody>
                   {filteredRsvps.map((rsvp) => (
                     <TableRow key={rsvp._id} className="hover:bg-[#E5E1C7]/5 transition-colors">
-                      <TableCell className="text-xs text-[#2A0306]/50">
+                      <TableCell className="text-[10px] md:text-xs text-[#2A0306]/50">
                         {new Date(rsvp.createdAt || Date.now()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                       </TableCell>
-                      <TableCell className="font-medium text-[#2A0306] break-all">{rsvp.email}</TableCell>
+                      <TableCell className="font-medium text-[#2A0306] text-sm break-all hidden md:table-cell">{rsvp.email}</TableCell>
                       <TableCell>
                         <div className="space-y-3 py-2">
                           {rsvp.guests.map((g, i) => (
-                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 border-b border-gray-100 last:border-0 pb-2 last:pb-0">
-                               <div className="min-w-[150px] font-medium flex items-center gap-2">
+                            <div key={i} className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 border-b border-gray-100 last:border-0 pb-2 last:pb-0">
+                               <div className="min-w-[120px] font-medium flex items-center gap-2 text-sm">
                                   <CheckCircle className="w-3 h-3 text-[#A16C56]" />
                                   <span>{g.name}</span>
                                   {g.isChild && (
-                                    <Badge variant="secondary" className="bg-orange-100 text-orange-700 border-orange-200 text-[9px] h-4">
-                                      CHILD ({g.age})
+                                    <Badge variant="secondary" className="bg-orange-100 text-orange-700 border-orange-200 text-[8px] h-3 px-1">
+                                      CHILD
                                     </Badge>
                                   )}
                                </div>
-                               <div className="flex gap-3">
-                                  <Badge variant="outline" className={`${g.attendingAnandKaraj ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[10px] px-2 py-0`}>
-                                    AK: {g.attendingAnandKaraj ? 'YES' : 'NO'}
+                               <div className="flex gap-2">
+                                  <Badge variant="outline" className={`${g.attendingAnandKaraj ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[9px] px-1.5 py-0`}>
+                                    AK
                                   </Badge>
-                                  <Badge variant="outline" className={`${g.attendingReception ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[10px] px-2 py-0`}>
-                                    REC: {g.attendingReception ? 'YES' : 'NO'}
+                                  <Badge variant="outline" className={`${g.attendingReception ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-50 text-gray-400 border-gray-200'} text-[9px] px-1.5 py-0`}>
+                                    REC
                                   </Badge>
                                </div>
-                               <div className="text-xs text-[#2A0306]/50 italic">
+                               <div className="text-[10px] text-[#2A0306]/50 italic md:block hidden">
                                   {g.foodPreference || ""}
                                </div>
                             </div>

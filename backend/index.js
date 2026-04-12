@@ -20,7 +20,7 @@ app.use(express.json());
 const origins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : '*';
 app.use(cors({
     origin: origins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
     maxAge: 86400 // Cache preflight response
