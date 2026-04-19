@@ -14,10 +14,10 @@ export const weddingData = {
     date: "August 28, 2026",
     description: "The Anand Karaj is the blissful union of two souls, a joyful and spiritual ceremony where vows are taken in the presence of the Guru Granth Sahib. It represents the sacred bond and commitment between two individuals embarking on a journey of love, faith, and togetherness.",
     venue: {
-      name: "Ekeby Gurdwara",
+      name: "Gurudwara Nanak Darbar (Malmö Gurudwara)",
       address: "Allégatan 6, 260 51 Ekeby",
-      coordinates: { lat: 56.0022, lng: 12.9932 },
-      mapLink: "https://maps.app.goo.gl/Jn7XRLLj8h3epUKr7?g_st=ic"
+      coordinates: { lat: 55.9923, lng: 12.9724 },
+      mapLink: "https://maps.app.goo.gl/qDKETt6zUgYaPvUZ6"
     },
     timeline: [
       { time: "09:00 AM", event: "Breakfast & Gathering", description: "Light refreshments and warm welcomes" },
