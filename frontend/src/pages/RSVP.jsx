@@ -20,13 +20,13 @@ const RSVP = () => {
   });
 
   const addGuest = () => {
-    if (formData.guests.length < 5) {
+    if (formData.guests.length < 8) {
       setFormData({
         ...formData,
         guests: [...formData.guests, { name: '', foodPreference: '', attendingAnandKaraj: true, attendingReception: true, isChild: false, age: '' }]
       });
     } else {
-      toast.error('Maximum 5 guests allowed');
+      toast.error('Maximum 8 guests allowed');
     }
   };
 
@@ -207,7 +207,7 @@ const RSVP = () => {
                         <div className="flex-1">
                           <label htmlFor={`anand-${index}`} className="cursor-pointer">
                             <p className="font-semibold text-sm text-[#2A0306]">{weddingData.anandKaraj.title}</p>
-                            <p className="text-xs text-[#2A0306]/70">Aug 28 • 9:00 AM</p>
+                            <p className="text-xs text-[#2A0306]/70">Aug 28 • 11:00 AM</p>
                           </label>
                         </div>
                       </div>

@@ -73,6 +73,30 @@ const Reception = () => {
         </div>
       </section>
 
+      {/* Dress Code */}
+      <section className="py-16 px-4 bg-white/50">
+        <div className="max-w-4xl mx-auto">
+          <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
+            <CardContent className="p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-serif text-[#2A0306] mb-4">
+                {reception.dressCode.title}
+              </h2>
+              <p className="text-lg text-[#2A0306]/80 mb-6">
+                {reception.dressCode.description}
+              </p>
+              <div className="grid md:grid-cols-2 gap-4">
+                {reception.dressCode.details.map((detail, index) => (
+                  <div key={index} className="flex items-start gap-3 p-4 bg-[#E5E1C7]/50 rounded-lg">
+                    <div className="w-2 h-2 bg-[#A16C56] rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-[#2A0306]">{detail}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Venue Details */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
@@ -119,27 +143,12 @@ const Reception = () => {
         </div>
       </section>
 
-      {/* Dress Code */}
-      <section className="py-16 px-4 bg-white/50">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
-            <CardContent className="p-8 md:p-12">
-              <h2 className="text-3xl md:text-4xl font-serif text-[#2A0306] mb-4">
-                {reception.dressCode.title}
-              </h2>
-              <p className="text-lg text-[#2A0306]/80 mb-6">
-                {reception.dressCode.description}
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {reception.dressCode.details.map((detail, index) => (
-                  <div key={index} className="flex items-start gap-3 p-4 bg-[#E5E1C7]/50 rounded-lg">
-                    <div className="w-2 h-2 bg-[#A16C56] rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-[#2A0306]">{detail}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+      {/* Speaking Requests */}
+      <section className="py-12 px-4 bg-white/30 italic">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-lg text-[#2A0306]/70 leading-relaxed">
+            Kindly note that the schedule is currently quite full. However, if you have any speaking requests or other special requests for the toastmasters, please contact them at: <a href="mailto:mehaksimarpal@gmail.com" className="text-[#A16C56] font-semibold hover:underline">mehaksimarpal@gmail.com</a>
+          </p>
         </div>
       </section>
 

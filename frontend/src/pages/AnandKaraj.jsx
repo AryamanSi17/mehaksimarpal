@@ -85,6 +85,30 @@ const AnandKaraj = () => {
         </div>
       </section>
 
+      {/* Dress Code */}
+      <section className="py-16 px-4 bg-white/50">
+        <div className="max-w-4xl mx-auto">
+          <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
+            <CardContent className="p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-serif text-[#2A0306] mb-4">
+                {anandKaraj.dressCode.title}
+              </h2>
+              <p className="text-lg text-[#2A0306]/80 mb-6">
+                {anandKaraj.dressCode.description}
+              </p>
+              <div className="grid md:grid-cols-2 gap-4">
+                {anandKaraj.dressCode.details.map((detail, index) => (
+                  <div key={index} className="flex items-start gap-3 p-4 bg-[#E5E1C7]/50 rounded-lg">
+                    <div className="w-2 h-2 bg-[#A16C56] rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-[#2A0306]">{detail}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Venue Details */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
@@ -105,7 +129,7 @@ const AnandKaraj = () => {
                 </h3>
                 <p className="text-[#2A0306]/80 mb-6">{anandKaraj.venue.address}</p>
                 <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${anandKaraj.venue.coordinates.lat},${anandKaraj.venue.coordinates.lng}`}
+                  href={anandKaraj.venue.mapLink || `https://www.google.com/maps/search/?api=1&query=${anandKaraj.venue.coordinates.lat},${anandKaraj.venue.coordinates.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -128,30 +152,6 @@ const AnandKaraj = () => {
               ></iframe>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Dress Code */}
-      <section className="py-16 px-4 bg-white/50">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-[#A16C56]/20 bg-white/80 backdrop-blur-sm shadow-xl">
-            <CardContent className="p-8 md:p-12">
-              <h2 className="text-3xl md:text-4xl font-serif text-[#2A0306] mb-4">
-                {anandKaraj.dressCode.title}
-              </h2>
-              <p className="text-lg text-[#2A0306]/80 mb-6">
-                {anandKaraj.dressCode.description}
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {anandKaraj.dressCode.details.map((detail, index) => (
-                  <div key={index} className="flex items-start gap-3 p-4 bg-[#E5E1C7]/50 rounded-lg">
-                    <div className="w-2 h-2 bg-[#A16C56] rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-[#2A0306]">{detail}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 

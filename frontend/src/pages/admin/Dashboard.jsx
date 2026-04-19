@@ -163,7 +163,10 @@ const Dashboard = () => {
     totalGuests: rsvps.reduce((acc, curr) => acc + curr.guests.length, 0),
     anandKaraj: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.attendingAnandKaraj).length, 0),
     reception: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.attendingReception).length, 0),
-    children: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.isChild).length, 0)
+    children: rsvps.reduce((acc, rsvp) => acc + rsvp.guests.filter(g => g.isChild).length, 0),
+    dietary: rsvps.flatMap(rsvp => rsvp.guests)
+                  .filter(g => g.foodPreference && g.foodPreference.trim() !== '')
+                  .map(g => ({ name: g.name, restriction: g.foodPreference }))
   };
 
   if (loading) return <div className="p-8 text-center text-[#2A0306]">Loading dashboard...</div>;
@@ -231,6 +234,28 @@ const Dashboard = () => {
             </Card>
           </div>
 
+          {/* Dietary Overview */}
+          {stats.dietary.length > 0 && (
+            <Card className="border-red-100 bg-red-50/20 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-serif text-[#2A0306] flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+                  Dietary Requirements Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {stats.dietary.map((d, i) => (
+                    <div key={i} className="flex flex-col p-3 bg-white border border-red-100 rounded-lg shadow-sm">
+                      <span className="font-semibold text-sm text-[#2A0306]">{d.name}</span>
+                      <span className="text-xs text-red-600 italic mt-1 font-medium">{d.restriction}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* RSVP Table */}
           <Card className="border-[#A16C56]/20 shadow-xl overflow-hidden bg-white/95">
             <CardHeader className="bg-white border-b border-[#A16C56]/10 py-6">
@@ -287,9 +312,11 @@ const Dashboard = () => {
                                     REC
                                   </Badge>
                                </div>
-                               <div className="text-[10px] text-[#2A0306]/50 italic md:block hidden">
-                                  {g.foodPreference || ""}
-                               </div>
+                               {g.foodPreference && (
+                                 <div className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">
+                                    {g.foodPreference}
+                                 </div>
+                               )}
                             </div>
                           ))}
                         </div>

@@ -16,11 +16,12 @@ export const weddingData = {
     venue: {
       name: "Ekeby Gurdwara",
       address: "Allégatan 6, 260 51 Ekeby",
-      coordinates: { lat: 56.0022, lng: 12.9932 }
+      coordinates: { lat: 56.0022, lng: 12.9932 },
+      mapLink: "https://maps.app.goo.gl/Jn7XRLLj8h3epUKr7?g_st=ic"
     },
     timeline: [
       { time: "09:00 AM", event: "Breakfast & Gathering", description: "Light refreshments and warm welcomes" },
-      { time: "09:00 AM", event: "Anand Karaj Ceremony", description: "Sacred wedding ceremony in the presence of Guru Granth Sahib" },
+      { time: "11:00 AM", event: "Anand Karaj Ceremony", description: "Sacred wedding ceremony in the presence of Guru Granth Sahib" },
       { time: "01:00 PM", event: "Langar (Community Lunch)", description: "Traditional vegetarian meal served to all" }
     ],
     dressCode: {
